@@ -1,0 +1,18 @@
+{
+  "testEnvironment": "jsdom",
+  "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
+  "testMatch": ["<rootDir>/tests/**/*.test.{ts,tsx}"],
+  "moduleNameMapping": {
+    "^@/(.*)$": "<rootDir>/$1"
+  },
+  "collectCoverageFrom": ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}", "hooks/**/*.{ts,tsx}", "lib/**/*.{ts,tsx}"],
+  "coverageDirectory": "coverage",
+  "transform": {
+    "^.+\\.(ts|tsx)$": [
+      "ts-jest",
+      {
+        "tsconfig": "tsconfig.json"
+      }
+    ]
+  }
+}

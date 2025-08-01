@@ -1,0 +1,20 @@
+setup:
+  addons:
+    - plan: heroku-postgresql:hobby-dev
+  config:
+    NODE_ENV: production
+
+build:
+  docker:
+    backend: server/Dockerfile
+    frontend: Dockerfile
+
+release:
+  image: backend
+  command:
+    - npx prisma migrate deploy
+    - npx prisma db seed
+
+run:
+  backend: npm start
+  frontend: npm start
