@@ -9,7 +9,7 @@
 </div>
 
 <div align="center">
-  <h3>🚀 A comprehensive JIRA-inspired project management system with enhanced board UI and role-based permissions</h3>
+  <h3>🚀 A comprehensive KARTAVYA-inspired project management system with enhanced board UI and role-based permissions</h3>
 </div>
 
 ---
@@ -255,7 +255,7 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) for 
 
 ## 🙏 Acknowledgments
 
-- Inspired by **JIRA Software Server 7.1**
+- Inspired by **KARTAVYA Software Server 7.1**
 - Built with modern **React** and **Node.js** ecosystem
 - Designed for **scalability** and **performance**
 - **Community-driven** development approach
