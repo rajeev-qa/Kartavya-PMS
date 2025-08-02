@@ -49,10 +49,52 @@ let issues = [
     reporter: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
+  },
+  {
+    id: 4,
+    key: 'DEMO-1',
+    summary: 'Demo Project Bug',
+    description: 'Sample bug for demo project',
+    type: 'Bug',
+    status: 'Open',
+    priority: 'High',
+    project_id: 2,
+    assignee_id: 1,
+    reporter_id: 1,
+    assignee: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
+    reporter: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: 5,
+    key: 'DEMO-2',
+    summary: 'Demo Feature Story',
+    description: 'Sample story for demo project',
+    type: 'Story',
+    status: 'In Progress',
+    priority: 'Medium',
+    project_id: 2,
+    assignee_id: 2,
+    reporter_id: 1,
+    assignee: { id: 2, username: 'john', email: 'john@example.com' },
+    reporter: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   }
 ]
 
-let nextIssueId = 4
+let nextIssueId = 6
+
+// Global variable to persist across requests
+if (typeof global !== 'undefined') {
+  if (!global.issues) {
+    global.issues = issues
+    global.nextIssueId = nextIssueId
+  }
+  issues = global.issues
+  nextIssueId = global.nextIssueId
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -101,6 +143,12 @@ export async function POST(request: NextRequest) {
     }
     
     issues.push(newIssue)
+    
+    // Update global storage
+    if (typeof global !== 'undefined') {
+      global.issues = issues
+      global.nextIssueId = nextIssueId
+    }
     
     return NextResponse.json({
       success: true,

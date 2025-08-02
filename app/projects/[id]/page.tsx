@@ -48,27 +48,20 @@ export default function ProjectDetailPage() {
     try {
       const token = localStorage.getItem('token')
       
-      // Fetch project details
-      const projectResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/projects/${params.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      
-      if (projectResponse.ok) {
-        const projectData = await projectResponse.json()
-        setProject(projectData.project)
+      // Fetch project details using projectsAPI
+      const projectResponse = await projectsAPI.getById(parseInt(params.id))
+      if (projectResponse.success) {
+        setProject(projectResponse.data)
       }
 
-      // Fetch project issues
-      const issuesResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/issues?project_id=${params.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      
+      // Fetch project issues using issuesAPI
+      const issuesResponse = await fetch(`/api/issues?project_id=${params.id}`)
       if (issuesResponse.ok) {
         const issuesData = await issuesResponse.json()
-        setIssues(issuesData.issues || [])
+        setIssues(issuesData.data || [])
         
         // Filter epics from issues (case-insensitive)
-        const epicIssues = issuesData.issues?.filter(issue => 
+        const epicIssues = issuesData.data?.filter(issue => 
           issue.type?.toLowerCase() === 'epic'
         ) || []
         setEpics(epicIssues)
