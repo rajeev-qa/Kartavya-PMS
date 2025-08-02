@@ -1,5 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { projectStore } from '@/lib/data-store'
+
+// Use the same in-memory storage as the main projects route
+let projects = [
+  {
+    id: 1,
+    name: 'Kartavya PMS',
+    key: 'KPM',
+    description: 'Main project management system',
+    lead_id: 1,
+    lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  }
+]
+
+// Global variable to track created projects
+if (typeof global !== 'undefined') {
+  if (!global.projects) {
+    global.projects = projects
+  }
+  projects = global.projects
+}
 
 export async function GET(
   request: NextRequest,
@@ -8,7 +29,7 @@ export async function GET(
   const id = parseInt(params.id)
   
   // Find project by ID
-  const project = projectStore.getById(id)
+  const project = projects.find(p => p.id === id)
   
   if (!project) {
     return NextResponse.json(

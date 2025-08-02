@@ -1,8 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { projectStore } from '@/lib/data-store'
+
+// In-memory storage for projects
+let projects = [
+  {
+    id: 1,
+    name: 'Kartavya PMS',
+    key: 'KPM',
+    description: 'Main project management system',
+    lead_id: 1,
+    lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  }
+]
+
+let nextId = 2
+
+// Global variable to persist across requests
+if (typeof global !== 'undefined') {
+  if (!global.projects) {
+    global.projects = projects
+    global.nextProjectId = nextId
+  }
+  projects = global.projects
+  nextId = global.nextProjectId
+}
 
 export async function GET() {
-  const projects = projectStore.getAll()
   return NextResponse.json({
     success: true,
     data: projects,
@@ -15,13 +39,24 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { name, key, description } = body
     
-    const newProject = projectStore.create({
+    const newProject = {
+      id: nextId++,
       name,
       key: key.toUpperCase(),
       description: description || '',
       lead_id: 1,
-      lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' }
-    })
+      lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+    
+    projects.push(newProject)
+    
+    // Update global storage
+    if (typeof global !== 'undefined') {
+      global.projects = projects
+      global.nextProjectId = nextId
+    }
     
     return NextResponse.json({
       success: true,

@@ -38,12 +38,15 @@ export default function DashboardsPage() {
   const fetchDashboards = async () => {
     try {
       const response = await dashboardAPI.getAll()
-      setDashboards(response.dashboards || [])
-      if (response.dashboards?.length > 0) {
-        setSelectedDashboard(response.dashboards[0])
+      const dashboardsData = response.data || response.dashboards || []
+      setDashboards(dashboardsData)
+      if (dashboardsData.length > 0) {
+        setSelectedDashboard(dashboardsData[0])
       }
     } catch (error) {
+      console.error('Dashboard fetch error:', error)
       toast.error("Failed to fetch dashboards")
+      setDashboards([]) // Set empty array on error
     } finally {
       setLoading(false)
     }
@@ -52,9 +55,10 @@ export default function DashboardsPage() {
   const fetchSystemStats = async () => {
     try {
       const response = await adminAPI.getStats()
-      setSystemStats(response.stats || {})
+      setSystemStats(response.data || response.stats || {})
     } catch (error) {
-      console.error("Failed to fetch system stats")
+      console.error("Failed to fetch system stats:", error)
+      setSystemStats({}) // Set empty object on error
     }
   }
 
