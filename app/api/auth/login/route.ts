@@ -22,11 +22,44 @@ export async function POST(request: NextRequest) {
           username: user.username,
           role: user.role,
           permissions: user.role === 'admin' ? [
-            'project.view', 'project.create', 'project.edit', 'project.delete',
-            'issue.view', 'issue.create', 'issue.edit', 'issue.delete', 'issue.bulk_edit',
-            'user.view', 'user.create', 'user.edit', 'user.delete',
-            'admin.settings', 'admin.roles', 'admin.permissions', 'admin.integrations',
-            'report.view', 'search.advanced', 'test.create', 'workflow.create'
+            // Project permissions
+            'project.view', 'project.create', 'project.edit', 'project.delete', 'project.admin',
+            // Issue permissions
+            'issue.view', 'issue.create', 'issue.edit', 'issue.delete', 'issue.bulk_edit', 'issue.assign',
+            // User permissions
+            'user.view', 'user.create', 'user.edit', 'user.delete', 'user.admin',
+            // Admin permissions
+            'admin.settings', 'admin.roles', 'admin.permissions', 'admin.integrations', 'admin.system',
+            // Report permissions
+            'report.view', 'report.create', 'report.edit', 'report.delete',
+            // Search permissions
+            'search.basic', 'search.advanced', 'search.filters',
+            // Test permissions
+            'test.view', 'test.create', 'test.edit', 'test.delete', 'test.execute',
+            // Workflow permissions
+            'workflow.view', 'workflow.create', 'workflow.edit', 'workflow.delete',
+            // Sprint permissions
+            'sprint.view', 'sprint.create', 'sprint.edit', 'sprint.delete',
+            // Dashboard permissions
+            'dashboard.view', 'dashboard.create', 'dashboard.edit', 'dashboard.delete',
+            // Comment permissions
+            'comment.view', 'comment.create', 'comment.edit', 'comment.delete',
+            // Attachment permissions
+            'attachment.view', 'attachment.create', 'attachment.delete',
+            // Epic permissions
+            'epic.view', 'epic.create', 'epic.edit', 'epic.delete',
+            // Version permissions
+            'version.view', 'version.create', 'version.edit', 'version.delete',
+            // Component permissions
+            'component.view', 'component.create', 'component.edit', 'component.delete',
+            // Time tracking permissions
+            'time.view', 'time.log', 'time.edit', 'time.delete',
+            // Notification permissions
+            'notification.view', 'notification.create', 'notification.edit',
+            // Integration permissions
+            'integration.view', 'integration.create', 'integration.edit', 'integration.delete',
+            // All access
+            '*'
           ] : ['project.view', 'issue.view', 'issue.create', 'issue.edit']
         }
       })
