@@ -180,9 +180,8 @@ export default function Integrations() {
         triggeredBy: "commit"
       }
     ])
-    } finally {
-      setLoading(false)
-    }
+    
+    setLoading(false)
   }
 
   const handleRunBuild = async (e: React.FormEvent) => {

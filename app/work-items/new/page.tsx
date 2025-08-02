@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,7 +13,7 @@ import { projectsAPI, issuesAPI, usersAPI } from "@/lib/api"
 import { toast } from "react-hot-toast"
 import AppLayout from "@/components/layout/AppLayout"
 
-export default function CreateWorkItem() {
+function CreateWorkItemForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [projects, setProjects] = useState<any[]>([])
@@ -286,5 +286,13 @@ export default function CreateWorkItem() {
         </form>
       </div>
     </AppLayout>
+  )
+}
+
+export default function CreateWorkItem() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CreateWorkItemForm />
+    </Suspense>
   )
 }

@@ -106,18 +106,16 @@ export default function OAuthTokensPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
+      <AppLayout>
         <div className="flex items-center justify-center h-96">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
         </div>
-      </div>
+      </AppLayout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <AppLayout>
       
       <div className="p-6">
         <div className="max-w-6xl mx-auto space-y-6">
@@ -343,6 +341,6 @@ export default function OAuthTokensPage() {
           </Card>
         </div>
       </div>
-    </div>
+    </AppLayout>
   )
 }

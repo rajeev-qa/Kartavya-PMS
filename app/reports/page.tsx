@@ -279,11 +279,9 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <AppLayout>
+      <div className="max-w-6xl mx-auto space-y-6">
 
-      <div className="p-6">
-        <div className="max-w-6xl mx-auto space-y-6">
           {/* Report Configuration */}
           <Card>
             <CardHeader>
@@ -432,8 +430,7 @@ export default function ReportsPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
       </div>
-    </div>
+    </AppLayout>
   )
 }
