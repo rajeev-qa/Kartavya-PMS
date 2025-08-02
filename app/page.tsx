@@ -1,19 +1,21 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
 export default function HomePage() {
   const router = useRouter()
+  const [checking, setChecking] = useState(true)
 
   useEffect(() => {
-    // Check if user is logged in
+    // Simple redirect without backend dependency
     const token = localStorage.getItem("token")
     if (token) {
       router.push("/dashboard")
     } else {
       router.push("/login")
     }
+    setChecking(false)
   }, [router])
 
   return (
