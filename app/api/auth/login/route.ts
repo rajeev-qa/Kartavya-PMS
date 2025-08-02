@@ -20,7 +20,8 @@ export async function POST(request: NextRequest) {
           id: Math.floor(Math.random() * 1000),
           email,
           username: user.username,
-          role: user.role
+          role: user.role,
+          permissions: user.role === 'admin' ? ['read', 'write', 'delete', 'admin'] : ['read', 'write']
         }
       })
     }
