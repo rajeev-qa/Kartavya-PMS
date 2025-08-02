@@ -26,14 +26,32 @@ api.interceptors.request.use(
 
 // Response interceptor to handle auth errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Ensure all responses have consistent structure
+    if (response.data && !response.data.hasOwnProperty('success')) {
+      response.data = {
+        success: true,
+        data: response.data,
+        total: Array.isArray(response.data) ? response.data.length : 1
+      }
+    }
+    return response
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token")
       localStorage.removeItem("user")
       window.location.href = "/login"
     }
-    return Promise.reject(error)
+    // Return consistent error structure instead of rejecting
+    return {
+      data: {
+        success: false,
+        data: [],
+        total: 0,
+        error: error.message || 'API Error'
+      }
+    }
   },
 )
 
