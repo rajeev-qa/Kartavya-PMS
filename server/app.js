@@ -30,7 +30,11 @@ const app = express()
 // Middleware
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: [
+      "http://localhost:3000", 
+      "http://localhost:3001",
+      "https://kartavya-pms-production.up.railway.app"
+    ],
     credentials: true,
   }),
 )
@@ -41,12 +45,23 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }))
 // Static files for uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 
-// Health check endpoint
+// Health check endpoints
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
+    port: process.env.PORT || 5000
+  })
+})
+
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Kartavya PMS Backend API is running",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    version: "1.0.0"
   })
 })
 
