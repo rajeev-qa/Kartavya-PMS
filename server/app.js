@@ -45,6 +45,15 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }))
 // Static files for uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 
+// Root endpoint
+app.get("/", (req, res) => {
+  res.json({
+    message: "Kartavya PMS Backend API",
+    status: "running",
+    timestamp: new Date().toISOString()
+  })
+})
+
 // Health check endpoints
 app.get("/health", (req, res) => {
   res.json({
@@ -90,9 +99,10 @@ app.use("*", (req, res) => {
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
+const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`)
+app.listen(PORT, HOST, () => {
+  console.log(`🚀 Server running on ${HOST}:${PORT}`)
   console.log(`📊 Environment: ${process.env.NODE_ENV}`)
   console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL}`)
 })
