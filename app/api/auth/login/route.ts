@@ -21,7 +21,13 @@ export async function POST(request: NextRequest) {
           email,
           username: user.username,
           role: user.role,
-          permissions: user.role === 'admin' ? ['read', 'write', 'delete', 'admin'] : ['read', 'write']
+          permissions: user.role === 'admin' ? [
+            'project.view', 'project.create', 'project.edit', 'project.delete',
+            'issue.view', 'issue.create', 'issue.edit', 'issue.delete', 'issue.bulk_edit',
+            'user.view', 'user.create', 'user.edit', 'user.delete',
+            'admin.settings', 'admin.roles', 'admin.permissions', 'admin.integrations',
+            'report.view', 'search.advanced', 'test.create', 'workflow.create'
+          ] : ['project.view', 'issue.view', 'issue.create', 'issue.edit']
         }
       })
     }

@@ -11,3 +11,13 @@ export async function GET() {
     }
   ])
 }
+
+export async function POST() {
+  return NextResponse.json({
+    id: 2,
+    name: 'New Dashboard',
+    description: 'Created dashboard',
+    is_shared: false,
+    created_at: new Date().toISOString()
+  })
+}
