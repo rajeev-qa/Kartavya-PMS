@@ -1,36 +1,36 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { projectStore } from '@/lib/data-store'
 
 export async function GET() {
+  const projects = projectStore.getAll()
   return NextResponse.json({
     success: true,
-    data: [
-      {
-        id: 1,
-        name: 'Kartavya PMS',
-        key: 'KPM',
-        description: 'Main project management system',
-        lead_id: 1,
-        lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }
-    ],
-    total: 1
+    data: projects,
+    total: projects.length
   })
 }
 
-export async function POST() {
-  return NextResponse.json({
-    success: true,
-    data: {
-      id: 2,
-      name: 'New Project',
-      key: 'NP',
-      description: 'Created via API',
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { name, key, description } = body
+    
+    const newProject = projectStore.create({
+      name,
+      key: key.toUpperCase(),
+      description: description || '',
       lead_id: 1,
-      lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  })
+      lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' }
+    })
+    
+    return NextResponse.json({
+      success: true,
+      data: newProject
+    })
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, error: 'Failed to create project' },
+      { status: 400 }
+    )
+  }
 }

@@ -111,7 +111,7 @@ export default function Projects() {
         for (const issue of sampleIssues) {
           await issuesApi.create({
             ...issue,
-            project_id: response.project.id,
+            project_id: response.data?.id || response.project?.id,
             description: `Sample ${issue.type} for demonstration purposes`
           })
         }
