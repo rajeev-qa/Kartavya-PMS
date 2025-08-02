@@ -6,7 +6,9 @@
     "build": "next build",
     "dev": "next dev -p 3001",
     "lint": "next lint",
-    "start": "next start -p 3001"
+    "start": "next start -p 3001",
+    "railway:setup": "node railway-db-setup.js",
+    "railway:build": "npm run railway:setup && npm run build"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
