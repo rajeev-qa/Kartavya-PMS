@@ -46,44 +46,33 @@ export default function ProjectDetailPage() {
 
   const fetchProjectDetails = async () => {
     try {
-      const token = localStorage.getItem('token')
-      
-      // Fetch project details using projectsAPI
+      // Fetch project details
       const projectResponse = await projectsAPI.getById(parseInt(params.id))
       if (projectResponse.success) {
         setProject(projectResponse.data)
       }
 
-      // Fetch project issues using issuesAPI
+      // Fetch project issues
       const issuesResponse = await fetch(`/api/issues?project_id=${params.id}`)
       if (issuesResponse.ok) {
         const issuesData = await issuesResponse.json()
         setIssues(issuesData.data || [])
         
-        // Filter epics from issues (case-insensitive)
+        // Filter epics from issues
         const epicIssues = issuesData.data?.filter(issue => 
           issue.type?.toLowerCase() === 'epic'
         ) || []
         setEpics(epicIssues)
       }
 
-      // Fetch team data
-      const teamResponse = await projectsAPI.getTeamMembers(parseInt(params.id))
-      setTeam(teamResponse.teamMembers || [])
-      
-      // Fetch all users for adding team members
-      const usersResponse = await usersAPI.getAll()
-      setUsers(usersResponse.users || [])
-
-      // Fetch roles for team member assignment
-      const rolesResponse = await rolesAPI.getAll()
-      setRoles(rolesResponse || [])
-
-      // Fetch sprints
-      const sprintsResponse = await sprintsAPI.getAll({ project_id: parseInt(params.id) })
-      setSprints(sprintsResponse.sprints || [])
+      // Set empty arrays for other data since APIs aren't fully implemented
+      setTeam([])
+      setUsers([])
+      setRoles([])
+      setSprints([])
 
     } catch (error) {
+      console.error('Error fetching project details:', error)
       toast.error("Failed to fetch project details")
     } finally {
       setLoading(false)
