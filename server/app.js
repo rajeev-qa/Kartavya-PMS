@@ -99,12 +99,11 @@ app.use("*", (req, res) => {
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
-const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost'
 
-app.listen(PORT, HOST, () => {
-  console.log(`🚀 Server running on ${HOST}:${PORT}`)
-  console.log(`📊 Environment: ${process.env.NODE_ENV}`)
-  console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL}`)
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on 0.0.0.0:${PORT}`)
+  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`)
+  console.log(`🔗 Database: ${process.env.DATABASE_URL ? 'Connected' : 'Not configured'}`)
 })
 
 module.exports = app
