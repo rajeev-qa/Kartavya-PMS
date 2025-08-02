@@ -67,14 +67,22 @@ export async function GET(request: Request) {
 
 export async function POST() {
   return NextResponse.json({
-    id: 3,
-    key: 'KPM-3',
-    summary: 'New Issue',
-    description: 'Created via API',
-    type: 'Task',
-    status: 'Open',
-    priority: 'Low',
-    project_id: 1,
-    created_at: new Date().toISOString()
+    success: true,
+    data: {
+      id: 4,
+      key: 'KPM-4',
+      summary: 'New Issue',
+      description: 'Created via API',
+      type: 'Task',
+      status: 'Open',
+      priority: 'Low',
+      project_id: 1,
+      assignee_id: null,
+      reporter_id: 1,
+      assignee: null,
+      reporter: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
   })
 }
