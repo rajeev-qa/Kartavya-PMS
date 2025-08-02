@@ -66,9 +66,28 @@ export default function Projects() {
   const fetchProjects = async () => {
     try {
       const response = await projectsApi.getAll()
-      setProjects(response.projects)
+      // Handle both old and new API response formats
+      const projectsData = response.data || response.projects || []
+      
+      // Transform projects to include stats if missing
+      const transformedProjects = projectsData.map((project: any) => ({
+        ...project,
+        stats: project.stats || {
+          totalIssues: 0,
+          completedIssues: 0,
+          inProgressIssues: 0,
+          todoIssues: 0,
+          progress: 0,
+          teamSize: 1
+        },
+        lead: project.lead || { id: 1, username: 'Unknown', email: 'unknown@example.com' }
+      }))
+      
+      setProjects(transformedProjects)
     } catch (error) {
+      console.error('Failed to fetch projects:', error)
       toast.error("Failed to fetch projects")
+      setProjects([]) // Set empty array on error
     } finally {
       setLoading(false)
     }
@@ -110,7 +129,7 @@ export default function Projects() {
     }
   }
 
-  const filteredProjects = projects.filter(
+  const filteredProjects = (projects || []).filter(
     (project) =>
       project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       project.key.toLowerCase().includes(searchTerm.toLowerCase()),
