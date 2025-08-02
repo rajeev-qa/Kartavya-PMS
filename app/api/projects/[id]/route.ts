@@ -11,6 +11,16 @@ let projects = [
     lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
+  },
+  {
+    id: 2,
+    name: 'Demo Project',
+    key: 'DEMO',
+    description: 'Demo project for testing',
+    lead_id: 1,
+    lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   }
 ]
 
@@ -52,18 +62,29 @@ export async function PUT(
     const id = parseInt(params.id)
     const body = await request.json()
     
-    const updatedProject = projectStore.update(id, body)
+    const projectIndex = projects.findIndex(p => p.id === id)
     
-    if (!updatedProject) {
+    if (projectIndex === -1) {
       return NextResponse.json(
         { success: false, error: 'Project not found' },
         { status: 404 }
       )
     }
     
+    projects[projectIndex] = {
+      ...projects[projectIndex],
+      ...body,
+      updated_at: new Date().toISOString()
+    }
+    
+    // Update global storage
+    if (typeof global !== 'undefined') {
+      global.projects = projects
+    }
+    
     return NextResponse.json({
       success: true,
-      data: updatedProject
+      data: projects[projectIndex]
     })
   } catch (error) {
     return NextResponse.json(
@@ -79,13 +100,20 @@ export async function DELETE(
 ) {
   const id = parseInt(params.id)
   
-  const deleted = projectStore.delete(id)
+  const projectIndex = projects.findIndex(p => p.id === id)
   
-  if (!deleted) {
+  if (projectIndex === -1) {
     return NextResponse.json(
       { success: false, error: 'Project not found' },
       { status: 404 }
     )
+  }
+  
+  projects.splice(projectIndex, 1)
+  
+  // Update global storage
+  if (typeof global !== 'undefined') {
+    global.projects = projects
   }
   
   return NextResponse.json({

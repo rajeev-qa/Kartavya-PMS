@@ -11,10 +11,20 @@ let projects = [
     lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
+  },
+  {
+    id: 2,
+    name: 'Demo Project',
+    key: 'DEMO',
+    description: 'Demo project for testing',
+    lead_id: 1,
+    lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   }
 ]
 
-let nextId = 2
+let nextId = 3
 
 // Global variable to persist across requests
 if (typeof global !== 'undefined') {
