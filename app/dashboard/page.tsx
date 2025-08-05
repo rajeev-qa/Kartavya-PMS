@@ -20,7 +20,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !user.id) {
       router.push("/login")
       return
     }
@@ -59,7 +59,7 @@ export default function Dashboard() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Good morning, {user?.username}!
+                Good morning, {user?.username || 'User'}!
               </h1>
               <p className="text-muted-foreground mt-1">Here's what's happening with your projects today.</p>
             </div>
