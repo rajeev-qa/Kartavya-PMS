@@ -1,57 +1,76 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { PrismaClient } from '@prisma/client'
 
-// Use the same in-memory storage as the main projects route
-let projects = [
-  {
-    id: 1,
-    name: 'Kartavya PMS',
-    key: 'KPM',
-    description: 'Main project management system',
-    lead_id: 1,
-    lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
-    id: 2,
-    name: 'Demo Project',
-    key: 'DEMO',
-    description: 'Demo project for testing',
-    lead_id: 1,
-    lead: { id: 1, username: 'admin', email: 'admin@kartavya.com' },
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  }
-]
-
-// Global variable to track created projects
-if (typeof global !== 'undefined') {
-  if (!global.projects) {
-    global.projects = projects
-  }
-  projects = global.projects
-}
+const prisma = new PrismaClient()
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const id = parseInt(params.id)
-  
-  // Find project by ID
-  const project = projects.find(p => p.id === id)
-  
-  if (!project) {
+  try {
+    const projectId = parseInt(params.id)
+    
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        lead: {
+          select: {
+            id: true,
+            username: true,
+            email: true
+          }
+        },
+        users: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                email: true
+              }
+            }
+          }
+        },
+        issues: {
+          include: {
+            assignee: {
+              select: {
+                id: true,
+                username: true,
+                email: true
+              }
+            },
+            reporter: {
+              select: {
+                id: true,
+                username: true,
+                email: true
+              }
+            }
+          }
+        },
+        sprints: true
+      }
+    })
+    
+    if (!project) {
+      return NextResponse.json(
+        { success: false, error: 'Project not found' },
+        { status: 404 }
+      )
+    }
+    
+    return NextResponse.json({
+      success: true,
+      data: project
+    })
+  } catch (error) {
+    console.error('Database error:', error)
     return NextResponse.json(
-      { success: false, error: 'Project not found' },
-      { status: 404 }
+      { success: false, error: 'Failed to fetch project' },
+      { status: 500 }
     )
   }
-  
-  return NextResponse.json({
-    success: true,
-    data: project
-  })
 }
 
 export async function PUT(
@@ -59,34 +78,34 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = parseInt(params.id)
+    const projectId = parseInt(params.id)
     const body = await request.json()
+    const { name, key, description } = body
     
-    const projectIndex = projects.findIndex(p => p.id === id)
-    
-    if (projectIndex === -1) {
-      return NextResponse.json(
-        { success: false, error: 'Project not found' },
-        { status: 404 }
-      )
-    }
-    
-    projects[projectIndex] = {
-      ...projects[projectIndex],
-      ...body,
-      updated_at: new Date().toISOString()
-    }
-    
-    // Update global storage
-    if (typeof global !== 'undefined') {
-      global.projects = projects
-    }
+    const updatedProject = await prisma.project.update({
+      where: { id: projectId },
+      data: {
+        name,
+        key: key?.toUpperCase(),
+        description
+      },
+      include: {
+        lead: {
+          select: {
+            id: true,
+            username: true,
+            email: true
+          }
+        }
+      }
+    })
     
     return NextResponse.json({
       success: true,
-      data: projects[projectIndex]
+      data: updatedProject
     })
   } catch (error) {
+    console.error('Database error:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to update project' },
       { status: 400 }
@@ -98,26 +117,22 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const id = parseInt(params.id)
-  
-  const projectIndex = projects.findIndex(p => p.id === id)
-  
-  if (projectIndex === -1) {
+  try {
+    const projectId = parseInt(params.id)
+    
+    await prisma.project.delete({
+      where: { id: projectId }
+    })
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Project deleted successfully'
+    })
+  } catch (error) {
+    console.error('Database error:', error)
     return NextResponse.json(
-      { success: false, error: 'Project not found' },
-      { status: 404 }
+      { success: false, error: 'Failed to delete project' },
+      { status: 400 }
     )
   }
-  
-  projects.splice(projectIndex, 1)
-  
-  // Update global storage
-  if (typeof global !== 'undefined') {
-    global.projects = projects
-  }
-  
-  return NextResponse.json({
-    success: true,
-    message: 'Project deleted successfully'
-  })
 }
