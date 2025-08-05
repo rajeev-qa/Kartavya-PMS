@@ -74,11 +74,32 @@ export default function ProjectDetailPage() {
         setEpics(epicIssues)
       }
 
-      // Set empty arrays for other data since APIs aren't fully implemented
-      setTeam([])
-      setUsers([])
-      setRoles([])
-      setSprints([])
+      // Fetch sprints for this project
+      const sprintsResponse = await fetch(`/api/sprints?project_id=${projectId}`)
+      if (sprintsResponse.ok) {
+        const sprintsData = await sprintsResponse.json()
+        setSprints(sprintsData.data || [])
+      }
+
+      // Fetch team members
+      const teamResponse = await fetch(`/api/projects/${projectId}/team`)
+      if (teamResponse.ok) {
+        const teamData = await teamResponse.json()
+        setTeam(teamData.data || [])
+      }
+
+      // Fetch users and roles for team management
+      const usersResponse = await fetch('/api/users')
+      if (usersResponse.ok) {
+        const usersData = await usersResponse.json()
+        setUsers(usersData.data || [])
+      }
+
+      const rolesResponse = await fetch('/api/roles')
+      if (rolesResponse.ok) {
+        const rolesData = await rolesResponse.json()
+        setRoles(rolesData.data || [])
+      }
 
     } catch (error) {
       console.error('Error fetching project details:', error)

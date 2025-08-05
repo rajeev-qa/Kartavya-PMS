@@ -34,13 +34,10 @@ export default function CreateIssuePage() {
 
   const fetchProjects = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/projects`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      const response = await fetch('/api/projects')
       if (response.ok) {
         const data = await response.json()
-        setProjects(data.projects || [])
+        setProjects(data.data || [])
       }
     } catch (error) {
       console.error('Failed to fetch projects:', error)
@@ -49,13 +46,10 @@ export default function CreateIssuePage() {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      const response = await fetch('/api/users')
       if (response.ok) {
         const data = await response.json()
-        setUsers(data.users || [])
+        setUsers(data.data || [])
       }
     } catch (error) {
       console.error('Failed to fetch users:', error)
@@ -81,11 +75,9 @@ export default function CreateIssuePage() {
 
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/issues`, {
+      const response = await fetch('/api/issues', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -97,7 +89,7 @@ export default function CreateIssuePage() {
 
       if (response.ok) {
         const data = await response.json()
-        const issueId = data.issue.id
+        const issueId = data.data.id
 
         // Upload attachments if any
         if (attachments.length > 0) {
@@ -105,11 +97,8 @@ export default function CreateIssuePage() {
             const formData = new FormData()
             formData.append('file', file)
             
-            await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/issues/${issueId}/attachments`, {
+            await fetch(`/api/issues/${issueId}/attachments`, {
               method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${token}`
-              },
               body: formData
             })
           }
