@@ -34,10 +34,12 @@ export default function Dashboard() {
         adminAPI.getStats()
       ])
       
-      setProjects(projectsResponse.projects || [])
-      setStats(statsResponse.stats || {})
+      setProjects(projectsResponse?.data || [])
+      setStats(statsResponse?.data || {})
     } catch (error) {
-      toast.error("Failed to load dashboard data")
+      console.error('Dashboard fetch error:', error)
+      setProjects([])
+      setStats({})
     } finally {
       setLoading(false)
     }

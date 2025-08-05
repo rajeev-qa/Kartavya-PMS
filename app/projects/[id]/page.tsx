@@ -39,15 +39,24 @@ export default function ProjectDetailPage() {
   const [sprintEndDate, setSprintEndDate] = useState("")
 
   useEffect(() => {
-    if (params.id) {
+    if (params.id && !isNaN(parseInt(params.id as string))) {
       fetchProjectDetails()
+    } else if (params.id && isNaN(parseInt(params.id as string))) {
+      setLoading(false)
+      toast.error("Invalid project ID")
     }
   }, [params.id])
 
   const fetchProjectDetails = async () => {
     try {
+      const projectId = parseInt(params.id as string)
+      if (isNaN(projectId)) {
+        toast.error("Invalid project ID")
+        return
+      }
+      
       // Fetch project details
-      const projectResponse = await projectsAPI.getById(parseInt(params.id))
+      const projectResponse = await projectsAPI.getById(projectId)
       if (projectResponse.success) {
         setProject(projectResponse.data)
       }
